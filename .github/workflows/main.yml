@@ -1,7 +1,6 @@
 name: CI devops 2025
 
 on:
-  # Cette CI se déclenche à chaque push sur main ou develop
   push:
     branches: 
       - main
@@ -13,34 +12,29 @@ on:
 
 jobs:
   test-backend: 
-    # Exécute le job sur une machine Ubuntu 24.04
     runs-on: ubuntu-24.04
 
     steps:
-      # Étape 1 : récupérer le code source du repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Étape 2 : configurer le JDK 21 pour Maven/Java
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      # Étape 3 : compiler et tester le backend avec Maven
       - name: Build and test with Maven
         working-directory: simple-api
         run: mvn clean verify
 
       - name: Run SonarCloud analysis
-      run: mvn -B verify sonar:sonar \
+        run: mvn -B verify sonar:sonar \
           -Dsonar.projectKey=KagouD_tp-devops-simple-api \
           -Dsonar.organization=kahem-devops \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           --file ./simple-api/pom.xml
-
 
   build-and-push-docker-image:
     needs: test-backend
