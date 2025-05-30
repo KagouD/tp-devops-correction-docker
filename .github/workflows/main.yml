@@ -32,7 +32,8 @@ jobs:
       - name: Build and test with Maven
         working-directory: simple-api
         run: mvn clean verify
-    build-and-push-docker-image:
+
+  build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
 
